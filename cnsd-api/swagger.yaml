@@ -6,7 +6,7 @@ swagger: '2.0'
 # This is your document metadata
 info:
   title: Drupal API
-  version: "0.1.0"
+  version: "0.2.0"
   description: The REST API documentation for CNSD website
   contact:
     email: "contact@land-dentiste.fr"
@@ -38,8 +38,13 @@ paths:
       tags:
       - "content"
       summary: "Get Contents"
-      operationId: "getContent"
+      operationId: "getContents"
       parameters:
+      - name: "_format"
+        in: "query"
+        type: "string"
+        description: "The format of rendering the object"
+        required: true
       - name: "category_name"
         in: "query"
         description: "The category name to get all content of it or its children categories"
@@ -102,7 +107,145 @@ paths:
             type: "array"
             items:
               $ref: "#/definitions/Content"
-  
+  /rest/content/unpublished:
+    get:
+      tags:
+      - "content"
+      summary: "Get Unpublished Contents Uuid"
+      operationId: "getUnpublishedContents"
+      parameters:
+      - name: "_format"
+        in: "query"
+        type: "string"
+        description: "The format of rendering the object"
+        required: true
+      - name: "category_name"
+        in: "query"
+        description: "The category name to get all content of it or its children categories"
+        required: false
+        type: "string"
+      - name: "type[]"
+        in: "query"
+        description: "The content type (multiple entries is accepted"
+        required: false
+        type: "string"
+      - name: "time"
+        in: "query"
+        description: "Enter a new value to rebuild caches"
+        required: false
+        type: "string"
+      - name: "changed"
+        in: "query"
+        description: "Will get all content which changed date is equal or greater than this entered"
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              type: "string"
+  /node/id:
+    get:
+      tags: 
+      - "content"
+      summary: "Get one Content"
+      description: "Change id to the nid value of the node"
+      operationId: "getContent"
+      parameters:
+      - name: "_format"
+        in: "query"
+        type: "string"
+        description: "The format of rendering the object"
+        required: true
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Content"
+  /rest/comments:
+    get:
+      tags:
+      - "comment"
+      summary: "Get Comments for a defined content"
+      operationId: "getComments"
+      parameters:
+      - name: "_format"
+        in: "query"
+        type: "string"
+        description: "The format of rendering the object"
+        required: true
+      - name: "nid"
+        in: "query"
+        type: "string"
+        description: "The nid of the node"
+        required: true
+      - name: "changed"
+        in: "query"
+        type: "string"
+        description: "The changed date for comments"
+        required: false
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Comment"
+  /push_notifications/add_token:
+    post:
+      tags:
+      - "push_notifications"
+      summary: "Add a new Token"
+      description: ""
+      operationId: "addToken"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Token object that needs to be added"
+        required: true
+        schema:
+          $ref: "#/definitions/PNToken"
+      - name: "_format"
+        in: "query"
+        type: "string"
+        description: "The format of rendering the object"
+        required: true
+      responses:
+        200:
+          description: "successful operation"
+  /entity/user:
+    post:
+      tags:
+      - "user"
+      summary: "Add a new User"
+      operationId: "addUser"
+      consumes:
+      - "application/hal+json"
+      produces:
+      - "application/hal+json"
+      parameters:
+      - name: "_format"
+        in: "query"
+        type: "string"
+        description: "The format of rendering the object"
+        required: true
+      - name: "body"
+        in: "body"
+        description: "User object that needs to be added"
+        required: true
+        schema: 
+          $ref: "#/definitions/User"
+      responses:
+        200:
+          description: "successful operation"
 definitions:
   PNToken:
     type: "object"
@@ -416,6 +559,35 @@ definitions:
       value:
         type: "string"
   CommentBody:
+    type: "object"
+    required:
+    - "value"
+    properties:
+      value:
+        type: "string"
+  User:
+    type: "object"
+    required:
+    - "_links"
+    - "name"
+    - "status"
+    properties:
+      _links:
+        $ref: "#/definitions/_links"
+      name:
+        $ref: "#/definitions/Name"
+      pass:
+        $ref: "#/definitions/Pass"
+      status:
+        $ref: "#/definitions/Status"
+  Name:
+    type: "object"
+    required:
+    - "value"
+    properties:
+      value:
+        type: "string"
+  Pass:
     type: "object"
     required:
     - "value"
