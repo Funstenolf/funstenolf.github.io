@@ -6,7 +6,7 @@ swagger: '2.0'
 # This is your document metadata
 info:
   title: Drupal API
-  version: "0.0.1"
+  version: "0.1.0"
   description: The REST API documentation for CNSD website
   contact:
     email: "contact@land-dentiste.fr"
@@ -32,7 +32,77 @@ produces:
   - application/json
 
 # Describe your paths here
-
+paths:
+  /rest/content:
+    get:
+      tags:
+      - "content"
+      summary: "Get Contents"
+      operationId: "getContent"
+      parameters:
+      - name: "category_name"
+        in: "query"
+        description: "The category name to get all content of it or its children categories"
+        required: false
+        type: "string"
+      - name: "page"
+        in: "query"
+        description: "The number of the page"
+        required: false
+        type: "string"
+      - name: "type[]"
+        in: "query"
+        description: "The content type (multiple entries is accepted"
+        required: false
+        type: "string"
+      - name: "time"
+        in: "query"
+        description: "Enter a new value to rebuild caches"
+        required: false
+        type: "string"
+      - name: "uuid"
+        in: "query"
+        description: "The uuid of the content, to get only one"
+        required: false
+        type: "string"
+      - name: "offset"
+        in: "query"
+        description: "The offset of the query"
+        required: false
+        type: "string"
+      - name: "items_per_page"
+        in: "query"
+        description: "The number of items per page"
+        required: false
+        type: "string"
+      - name: "category_id"
+        in: "query"
+        description: "The category id"
+        required: false
+        type: "string"
+      - name: "changed"
+        in: "query"
+        description: "Will get all content which changed date is equal or greater than this entered"
+        required: false
+        type: "string"
+      - name: "status"
+        in: "query"
+        description: "The published status"
+        required: false
+        type: "string"
+      - name: "created"
+        in: "query"
+        description: "Will get all content which created date is equal or lower than this entered"
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Content"
+  
 definitions:
   PNToken:
     type: "object"
@@ -91,7 +161,6 @@ definitions:
     - "title"
     - "body"
     - "type"
-    - "field_category"
     properties:
       _links:
         $ref: "#/definitions/_links"
@@ -109,8 +178,6 @@ definitions:
         $ref: "#/definitions/Status"
       title:
         $ref: "#/definitions/Title"
-      _embedded:
-        $ref: "#/definitions/_embedded"
       created:
         $ref: "#/definitions/Created"
       changed:
@@ -147,8 +214,6 @@ definitions:
         type: "string"
   _linksEntityId:
     type: "object"
-    required:
-    - "href"
     properties:
       href:
         type: "string"
@@ -163,7 +228,6 @@ definitions:
     properties:
       value:
         type: "string"
-  
   Vid:
     type: "object"
     properties:
@@ -177,4 +241,184 @@ definitions:
         type: "string"
       lang:
         type: "string"
-  
+  Type:
+    type: "object"
+    required:
+    - "target_id"
+    properties:
+      target_id:
+        type: "string"
+  Status:
+    type: "object"
+    properties:
+      value:
+        type: "boolean"
+      lang:
+        type: "string"
+  Title:
+    type: "object"
+    required:
+    - "value"
+    properties:
+      value:
+        type: "string"
+      lang:
+        type: "string"
+  Created:
+    type: "object"
+    properties:
+      value:
+        type: "integer"
+        format: "int32"
+      lang:
+        type: "string"
+  Changed:
+    type: "object"
+    properties:
+      value:
+        type: "integer"
+        format: "int32"
+      lang:
+        type: "string"
+  Promote:
+    type: "object"
+    properties:
+      value:
+        type: "boolean"
+      lang:
+        type: "string"
+  Sticky:
+    type: "object"
+    properties:
+      value:
+        type: "boolean"
+      lang:
+        type: "string"
+  RevTimestamp:
+    type: "object"
+    properties:
+      value:
+        type: "integer"
+        format: "int32"
+  RevTransAffected:
+    type: "object"
+    properties:
+      value:
+        type: "boolean"
+      lang:
+        type: "string"
+  DefaultLangcode:
+    type: "object"
+    properties:
+      value:
+        type: "boolean"
+      lang:
+        type: "string"
+  Body:
+    type: "object"
+    required:
+    - "summary"
+    - "value"
+    properties:
+      value:
+        type: "string"
+      format:
+        type: "string"
+      summary:
+        type: "string"
+      lang:
+        type: "string"
+  NodeComment:
+    type: "object"
+    properties:
+      status:
+        type: "integer"
+        format: "int32"
+      cid:
+        type: "integer"
+        format: "int32"
+      last_comment_timestamp:
+        type: "integer"
+        format: "int32"
+      last_comment_name:
+        type: "string"
+      last_comment_uid:
+        type: "integer"
+        format: "int32"
+      comment_count:
+        type: "integer"
+        format: "int32"
+      lang:
+        type: "string"
+  Comment:
+    type: "object"
+    required:
+    - "_links"
+    - "entity_id"
+    - "entity_type"
+    - "subject"
+    - "status"
+    - "comment_type"
+    - "field_name"
+    properties:
+      _links:
+        $ref: "#/definitions/_links"
+      entity_id:
+        $ref: "#/definitions/EntityId"
+      entity_type:
+        $ref: "#/definitions/EntityType"
+      subject:
+        $ref: "#/definitions/Subject"
+      status:
+        $ref: "#/definitions/Status"
+      comment_type:
+        $ref: "#/definitions/CommentType"
+      field_name:
+        $ref: "#/definitions/FieldName"
+      CommentBody:
+        $ref: "#/definitions/CommentBody"
+  EntityId:
+    type: "object"
+    required:
+    - "target_id"
+    - "revision_id"
+    properties:
+      target_id:
+        type: "string"
+      revision_id:
+        type: "string"
+  EntityType:
+    type: "object"
+    required:
+    - "value"
+    properties:
+      value:
+        type: "string"
+  Subject:
+    type: "object"
+    required:
+    - "value"
+    properties:
+      value:
+        type: "string"
+  CommentType:
+    type: "object"
+    required:
+    - "target_id"
+    properties:
+      target_id:
+        type: "string"
+  FieldName:
+    type: "object"
+    required:
+    - "value"
+    properties:
+      value:
+        type: "string"
+  CommentBody:
+    type: "object"
+    required:
+    - "value"
+    properties:
+      value:
+        type: "string"
