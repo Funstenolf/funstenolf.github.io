@@ -8,8 +8,20 @@ info:
   title: Drupal API
   version: "0.0.1"
   description: The REST API documentation for CNSD website
+  contact:
+    email: "contact@land-dentiste.fr"
   
 host: vm522.haisoft.net
+
+tags:
+- name: "push_notifications"
+  description: "Everything about Push Notifications"
+- name: "content"
+  description: "Everything about Content"
+- name: "comment"
+  description: "Everything about Comment"
+- name: "user"
+  description: "Everything about Users"
 
 schemes:
   - http
@@ -20,42 +32,149 @@ produces:
   - application/json
 
 # Describe your paths here
-paths:
-  # This is a path endpoint. Change it.
-  /push_notifications/add_token:
-    # This is a HTTP operation
-    post:
-      tags:
-        0:  "push_notifications_token"
-      # Describe this verb here. Note: you can use markdown
-      summary: Add a new Push Notifications Token object.
-      description: ""
-      operationId : ""
-      # This is array of GET operation parameters:
-      parameters:
-        # An example parameter that is in query and is required
-        -
-          name: size
-          in: query
-          description: Size of array
-          required: true
-          type: number
-          format: double
-      # Expected responses for this operation:
-      responses:
-        # Response code
-        200:
-          description: Successful response
-          # A schema describing your response object.
-          # Use JSON Schema format
-          schema:
-            title: ArrayOfPersons
-            type: array
-            items:
-              title: Person
-              type: object
-              properties:
-                name:
-                  type: string
-                single:
-                  type: boolean
+
+definitions:
+  PNToken:
+    type: "object"
+    required:
+    - "token"
+    - "device"
+    - "app"
+    properties:
+      token:
+        type: "string"
+      device:
+        $ref: "#/definitions/Device"
+      app:
+        $ref: "#/definitions/App"
+  Device:
+    type: "object"
+    required:
+    - "uuid"
+    - "model"
+    - "virtual"
+    - "manufacturer"
+    - "os"
+    properties:
+      uuid:
+        type: "string"
+      model:
+        type: "string"
+      virtual:
+        type: "boolean"
+      manufacturer:
+        type: "string"
+      os :
+        $ref: "#/definitions/Os"
+  Os:
+    type: "object"
+    required:
+    - "platform"
+    - "version"
+    properties:
+      platform:
+        type: "string"
+        example: "Android"
+      version:
+        type: "string"
+  App:
+    type: "object"
+    required:
+    - "version"
+    properties:
+      version:
+        type: "string"
+  Content:
+    type: "object"
+    required:
+    - "_links"
+    - "title"
+    - "body"
+    - "type"
+    - "field_category"
+    properties:
+      _links:
+        $ref: "#/definitions/_links"
+      nid:
+        $ref: "#/definitions/Nid"
+      uuid:
+        $ref: "#/definitions/Uuid"
+      vid:
+        $ref: "#/definitions/Vid"
+      langcode:
+        $ref: "#/definitions/Langcode"
+      type:
+        $ref: "#/definitions/Type"
+      status:
+        $ref: "#/definitions/Status"
+      title:
+        $ref: "#/definitions/Title"
+      _embedded:
+        $ref: "#/definitions/_embedded"
+      created:
+        $ref: "#/definitions/Created"
+      changed:
+        $ref: "#/definitions/Changed"
+      promote:
+        $ref: "#/definitions/Promote"
+      sticky:
+        $ref: "#/definitions/Sticky"
+      revision_timestamp:
+        $ref: "#/definitions/RevTimestamp"
+      revision_translation_affected:
+        $ref: "#/definitions/RevTransAffected"
+      default_langcode:
+        $ref: "#/definitions/DefaultLangcode"
+      body:
+        $ref: "#/definitions/Body"
+      comment:
+        $ref: "#/definitions/NodeComment"
+  _links:
+    type: "object"
+    required:
+    - "type"
+    properties:
+      type: 
+        $ref: "#/definitions/_linksType"
+      rest/relation/comment/comment/entity_id:
+        $ref: "#/definitions/_linksEntityId"
+  _linksType:
+    type: "object"
+    required:
+    - "href"
+    properties:
+      href:
+        type: "string"
+  _linksEntityId:
+    type: "object"
+    required:
+    - "href"
+    properties:
+      href:
+        type: "string"
+  Nid:
+    type: "object"
+    properties:
+      value:
+        type: "integer"
+        format: "int32"
+  Uuid:
+    type: "object"
+    properties:
+      value:
+        type: "string"
+  
+  Vid:
+    type: "object"
+    properties:
+      value:
+        type: "integer"
+        format: "int32"
+  Langcode:
+    type: "object"
+    properties:
+      value:
+        type: "string"
+      lang:
+        type: "string"
+  
