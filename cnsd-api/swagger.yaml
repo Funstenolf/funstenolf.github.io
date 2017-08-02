@@ -6,7 +6,7 @@ swagger: '2.0'
 # This is your document metadata
 info:
   title: Drupal API
-  version: "0.2.0"
+  version: "0.3.0"
   description: The REST API documentation for CNSD website
   contact:
     email: "contact@land-dentiste.fr"
@@ -243,6 +243,81 @@ paths:
         required: true
         schema: 
           $ref: "#/definitions/User"
+      responses:
+        200:
+          description: "successful operation"
+  /entity/comment:
+    post:
+      tags:
+      - "comment"
+      summary: "Add a new Comment"
+      operationId: "addComment"
+      consumes:
+      - "application/hal+json"
+      produces:
+      - "application/hal+json"
+      parameters:
+      - name: "_format"
+        in: "query"
+        type: "string"
+        description: "The format of rendering the object"
+        required: true
+      - name: "body"
+        in: "body"
+        description: "Comment object that needs to be added"
+        required: true
+        schema:
+          $ref: "#/definitions/Comment"
+      responses:
+        200:
+          description: "successful operation"
+  /rest/content/ads:
+    get:
+      tags:
+      - "content"
+      summary: "Get Ad Contents"
+      operationId: "getAdsContents"
+      parameters:
+      - name: "_format"
+        in: "query"
+        type: "string"
+        description: "The format of rendering the object"
+        required: true
+      - name: "type"
+        in: "query"
+        description: "The ad type (banner, interstitial, fullscreen)"
+        required: false
+        type: "string"
+      - name: "uuid_only"
+        in: "query"
+        description: "Return Ad object or only uuid"
+        required: false
+        type: "boolean"
+      - name: "priority"
+        in: "query"
+        description: "the priority of the ad"
+        required: false
+        type: "string"
+      - name: "uuid"
+        in: "query"
+        description: "If set get only the corresponding Ad"
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+  /jwt/token:
+    get:
+      tags:
+      - "user"
+      summary: "Get the JWT corresponding to current user"
+      operationId: "getJWT"
+      parameters:
+      - name: "_format"
+        in: "query"
+        type: "string"
+        description: "The format of rendering the object"
+        required: true
       responses:
         200:
           description: "successful operation"
